@@ -1,6 +1,8 @@
+ion-content{
+  --background:#000;
+}
 #container {
   text-align: center;
-
   position: absolute;
   left: 0;
   right: 0;
@@ -16,9 +18,7 @@
 #container p {
   font-size: 16px;
   line-height: 22px;
-
   color: #8c8c8c;
-
   margin: 0;
 }
 
@@ -57,6 +57,7 @@
       background-color: transparent;
       height: 100%;
       padding: 0 10px;
+      width:100%;
     }
   }
   .node-container{
@@ -97,7 +98,10 @@
         left:30px;
         width:20px;
         height:20px;
-        background-color: rgba(0, 204, 255, 0.4);
+        &.fail{background-color:rgba(153, 12, 12, 0.4) ;}
+        &.degr{background-color:rgba(218, 151, 9, 0.4) ;}
+        &.work{background-color:rgba(29, 211, 23, 0.4) ;}
+        &.nomi{background-color:rgba(255, 255, 255, 0.4) ;}
         border-radius: 50%;
         line-height: 25px;
         text-align: center;
@@ -138,5 +142,31 @@
     vertical-align: middle;
     font-size: 26px;
     font-weight: 800;
+  }
+}
+
+.footer{
+  border-radius:15px;
+  background-color: rgb(19, 20, 24);
+  height:150px;
+  width:300px;
+  position: absolute;
+  bottom:0;
+  color:white;
+  padding:10px;
+  &.left{left:0;}
+  &.right{right:0;}
+
+  .color-selector{
+    .key{
+      width:15px;
+      height:15px;
+      border-radius: 50%;
+      float:right;
+      &.fail{background-color:rgb(153, 12, 12) ;}
+      &.degr{background-color:rgb(218, 151, 9) ;}
+      &.work{background-color:rgb(29, 211, 23) ;}
+      &.nomi{background-color:rgb(255, 255, 255) ;}
+    }
   }
 }

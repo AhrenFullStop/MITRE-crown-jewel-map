@@ -1,13 +1,17 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { constants } from 'buffer';
 declare var LeaderLine;
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
+  host: {
+    '(document:keypress)': 'handleKeyPress($event)'
+  }
 })
 export class HomePage {
 
+  //@HostListener('document:keypress', ['$event'])
   rows:Array<IRow>=[];
   connections:Array<IConnection>=[];
   rowIdCounter=0;
@@ -15,9 +19,12 @@ export class HomePage {
   drawing=false;
   startNode;
   endNode;
+  connectorState='nomi';
+
   constructor() {
 
   }
+
   async ionViewDidEnter(){
     await this.timeout(500);
     this.addRow();
@@ -30,6 +37,7 @@ export class HomePage {
     await this.timeout(500);
     this.addNode(this.rows[1]);
   }
+
   addRow(){
     console.log("adding new row")
     let newRow:IRow={
@@ -54,6 +62,35 @@ export class HomePage {
     this.nodeIdCounter++;
     console.log("row "+row.name+" has "+row.nodes.length+" nodes.");
     this.reposition();
+  }
+
+  handleKeyPress(event: KeyboardEvent) { 
+    let key =event.key.toLocaleLowerCase();
+    console.log(key);
+    switch(event.key){
+      case 'q'://stop node connect
+      this.drawing=false;
+      this.startNode=null;
+        break;
+      case 'h'://hide connections
+      this.hideConnections();
+        break;
+      case 's'://show connections
+      this.showAllConnections();
+        break;
+      case '1'://failure
+      this.connectorState="fail";
+        break;
+      case '2'://degraded
+      this.connectorState="degr";
+        break;
+      case '3'://work around
+      this.connectorState="work";
+        break;
+      case '4'://nominal
+      this.connectorState="nomi";
+        break;
+    }
   }
 
   removeNode(row,node){
@@ -99,16 +136,31 @@ export class HomePage {
 
   drawLine(){
     console.log("drawing: ", this.startNode,this.endNode);
+    let lineColor = this.getColorBasedOnState();
     let myLine = new LeaderLine(
       document.getElementById(this.startNode),
       document.getElementById(this.endNode),
-      {color:'white'}
+      {color:lineColor}
       );
     this.connections.push({
       origin:this.startNode,
       destination:this.endNode,
-      line: myLine
+      line: myLine,
+      state:this.connectorState
     });
+  }
+
+  getColorBasedOnState(){
+    switch(this.connectorState){
+      case 'fail'://failure
+        return "#870c0c";
+      case 'degr'://degraded
+        return "#da9809";
+      case 'work'://work around
+        return "#1dd317";
+      case 'nomi'://nominal
+        return "#FFFFFF";
+    }
   }
 
   async reposition(){
@@ -161,4 +213,5 @@ export interface IConnection{
   origin:string;
   destination:string;
   line:any;
+  state:string;
 }
