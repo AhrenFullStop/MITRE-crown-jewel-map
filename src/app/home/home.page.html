@@ -1,20 +1,40 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Blank
+      Jumo CrownMap
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <div class="action-bar">
+    <div class="action-btn green" (click)="addRow()">
+      <i class="las la-plus-circle"></i> Add Row
+    </div>
+    <div class="action-btn show" (click)="addRow()">
+      <i class="las la-eye"></i>show all
+    </div>
+    <div class="action-btn hide" (click)="hideConnections()">
+      <i class="la la-eye-slash"></i> hide all
+    </div>
+  </div>
+  
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
+  <div class="row-wrapper" *ngFor="let row of rows; let i=index">
+    <div class="row-name">
+      <input type="search" name="{row.id}" [ngModel]="rows[i].name"/>
+    </div>
+    <div class="node-container">
+      <div *ngFor="let node of row.nodes; let ii= index" class="node"> 
+        <div class="remove" (click)="removeNode(row,node)"> - </div>
+        <div class="view" (click)="showConnections(node.id)"> <i class="las la-eye"></i> </div>
+        <div class="connect" *ngIf="!drawing" (click)="startDrawing(node)"></div>
+        <div class="recieve" *ngIf="drawing" (click)="endDrawing(node)">*</div>
+        <input type="search" name="node.id" [id]="node.id" [ngModel]="row.nodes[ii].name"/>
+      </div>
+    </div>
+    <div class="add-node-btn" (click)="addNode(row)">
+      <i class="las la-plus"></i>
+    </div>
   </div>
 </ion-content>

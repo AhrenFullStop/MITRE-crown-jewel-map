@@ -25,3 +25,118 @@
 #container a {
   text-decoration: none;
 }
+
+.action-bar{
+  width:100%;
+  display: flex;
+  justify-content: space-between;
+  .action-btn{
+    width:20%;
+    padding:10px;
+    border-radius: 8px;
+    margin:20px;
+    color:white;
+    text-align: center;
+    i{margin:0 5px}
+    &.green {background: #04B200;}
+    &.show  {background: rgb(34, 168, 221);}
+    &.hide  {background: rgb(53, 52, 66);}
+  }
+}
+
+
+.row-wrapper{
+  width:100%;
+  height:100px;
+  display: flex;
+  margin: 20px 0;
+  .row-name{
+    width:10%;
+    color:white;
+    input{
+      background-color: transparent;
+      height: 100%;
+      padding: 0 10px;
+    }
+  }
+  .node-container{
+    width:80%;
+    background-color: #8c8c8c21;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    .node{
+      margin: 10px 10px;
+      height:80px;
+      width:80px;
+      background-color: rgba(0, 195, 255, 0.3);
+      border-radius: 50%;
+      position: relative;
+      input{
+        background-color: transparent;
+        height: 100%;
+        width:100%;
+        text-align: center;
+        border:none;
+        -webkit-appearance: none;
+      }
+      .remove{
+        position:absolute;
+        bottom:0;
+        right:0;
+        width:20px;
+        height:20px;
+        background-color: rgba(255, 0, 0, 0.4);
+        border-radius: 50%;
+        line-height: 17px;
+        text-align: center;
+      }
+      .connect{
+        position:absolute;
+        top:-10px;
+        left:30px;
+        width:20px;
+        height:20px;
+        background-color: rgba(0, 204, 255, 0.4);
+        border-radius: 50%;
+        line-height: 25px;
+        text-align: center;
+      }
+      .recieve{
+        position:absolute;
+        top:-10px;
+        left:30px;
+        width:20px;
+        height:20px;
+        background-color: rgba(255, 255, 255, 0.4);
+        border-radius: 50%;
+        line-height: 25px;
+        text-align: center;
+      }
+      .view{
+        position:absolute;
+        bottom:0;
+        left:0;
+        width:20px;
+        height:20px;
+        background-color: rgba(255, 251, 0, 0.4);
+        border-radius: 50%;
+        line-height: 20px;
+        text-align: center;
+      }
+    }
+  }
+  .add-node-btn{
+    margin: 10px 20px;
+    width: 80px;
+    border-radius: 50%;
+    height: 80px;
+    line-height: 75px;
+    color: white;
+    background: #04B200;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 26px;
+    font-weight: 800;
+  }
+}
