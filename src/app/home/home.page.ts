@@ -1,8 +1,9 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, ElementRef, ViewChild } from '@angular/core';
 import { constants } from 'buffer';
 import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 
+import { DomSanitizer } from '@angular/platform-browser';
 declare var LeaderLine;
 @Component({
   selector: 'app-home',
@@ -14,6 +15,8 @@ declare var LeaderLine;
 })
 export class HomePage {
 
+  @ViewChild("uploader",{static: false}) uploader:ElementRef;
+
   //@HostListener('document:keypress', ['$event'])
   rows:Array<IRow>=[];
   connections:Array<IConnection>=[];
@@ -23,8 +26,9 @@ export class HomePage {
   startNode;
   endNode;
   connectorState='nomi';
+  isTyping = false;
 
-  constructor() {
+  constructor(private sanitizer: DomSanitizer) {
 
   }
 
@@ -52,7 +56,10 @@ export class HomePage {
     this.rowIdCounter++;
     console.log("rows:",this.rows.length);
   }
-
+  drop(e){
+    console.log("",e);
+    //this.reposition();
+  }
   addNode(row){
     console.log("creating node");
     let newNode:INode={
@@ -68,9 +75,14 @@ export class HomePage {
   }
 
   handleKeyPress(event: KeyboardEvent) { 
+    // Don't do anything will focused and typing
+    if(this.isTyping) return;
     let key =event.key.toLocaleLowerCase();
     console.log(key);
     switch(event.key){
+      case 's':
+        this.saveState();
+        break;
       case 'q'://stop node connect
       this.drawing=false;
       this.startNode=null;
@@ -78,9 +90,12 @@ export class HomePage {
       case 'h'://hide connections
       this.hideConnections();
         break;
-      case 's'://show connections
+      case 'a'://show connections
       this.showAllConnections();
         break;
+      case 'i':
+        this.uploader.nativeElement.click();
+      break;
       case '1'://failure
       this.connectorState="fail";
         break;
@@ -137,23 +152,36 @@ export class HomePage {
     });
   }
 
-  drawLine(){
-    console.log("drawing: ", this.startNode,this.endNode);
+  drawLine(startNode?,endNode?){
+    let start = startNode? startNode : this.startNode;
+    let end = endNode? endNode: this.endNode;
     let lineColor = this.getColorBasedOnState();
     let myLine = new LeaderLine(
-      document.getElementById(this.startNode),
-      document.getElementById(this.endNode),
+      document.getElementById(start),
+      document.getElementById(end),
       {color:lineColor}
       );
     this.connections.push({
-      origin:this.startNode,
-      destination:this.endNode,
+      origin:start,
+      destination:end,
       line: myLine,
       state:this.connectorState
     });
   }
 
-  getColorBasedOnState(){
+  getColorBasedOnState(state?){
+    if(state){
+      switch(state){
+        case 'fail'://failure
+          return "#870c0c";
+        case 'degr'://degraded
+          return "#da9809";
+        case 'work'://work around
+          return "#1dd317";
+        case 'nomi'://nominal
+          return "#FFFFFF";
+      }
+    }
     switch(this.connectorState){
       case 'fail'://failure
         return "#870c0c";
@@ -174,7 +202,7 @@ export class HomePage {
       let myLine = new LeaderLine(
         document.getElementById(conn.origin),
         document.getElementById(conn.destination),
-        {color:'white'}
+        {color: this.getColorBasedOnState(conn.state)}
         );
       conn.line=myLine;
     });
@@ -194,8 +222,76 @@ export class HomePage {
     this.drawLine();
   }
 
+  showSideBar(node:INode){
+    //set all other sidebars to invisible
+    //foreach row, then each node, node.clicked=false
+    //set the sidebar visible
+    node.clicked=true;
+  }
+
   timeout(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  url;
+  saveState(){
+    let data=JSON.stringify({rows:this.rows, connections: this.connections})
+    console.log(data);
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = window.URL.createObjectURL(blob);
+    this.url = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+
+    //
+    const dwldLink = document.createElement('a');
+
+    if (navigator.userAgent.indexOf('Safari') !== -1 && navigator.userAgent.indexOf('Chrome') === -1) {
+      dwldLink.setAttribute('target', '_blank');
+    }
+    dwldLink.setAttribute('href', url);
+    dwldLink.setAttribute('download', "jump-crown-map-data.json");
+    dwldLink.style.visibility = 'hidden';
+    document.body.appendChild(dwldLink);
+    dwldLink.click();
+    document.body.removeChild(dwldLink);
+  }
+
+  public importFile(event) {
+    // const reader = new FileReader();
+    // reader.onload = (e: any) => {
+    //   console.log(JSON.parse(e));
+    // };
+    // reader.read
+    // reader.(event.target.files[0])
+    this.importTHAFile(event);
+  }
+
+  json;
+  importTHAFile(evt){
+    var files = evt.target.files;
+    var reader = new FileReader();
+    reader.onload = (e: any)=>{
+				console.log('e readAsText = ', e);
+				console.log('e readAsText target = ', e.target);
+				try {
+          this.json = JSON.parse(e.target.result);
+          this.rows.forEach(x => {
+            this.nodeIdCounter += x.nodes.length;
+            this.rowIdCounter++;
+          })
+          //Set the rows
+          this.rows=this.json.rows;
+          //draw the lines
+          this.json.connections.forEach(async con => {
+            await this.timeout(500);
+            this.drawLine(con.origin,con.destination);
+          });
+          //this.showAllConnections();
+          this.reposition();
+				} catch (ex) {
+					alert('ex when trying to parse json = ' + ex);
+				}
+		};
+    reader.readAsText(files[0]);
   }
 }
 
