@@ -20,19 +20,28 @@
   </div>
   
 
-  <div class="row-wrapper" *ngFor="let row of rows; let i=index">
+  <div class="row-wrapper" *ngFor="let row of rows; let i=index" >
     <div class="row-name">
-      <input type="search" name="{row.id}" [ngModel]="rows[i].name"/>
+      <input type="text" name="{row.id}" [ngModel]="rows[i].name"/>
     </div>
-    <div class="node-container">
-      <div *ngFor="let node of row.nodes; let ii= index" class="node"> 
+
+    <div  class="node-container">
+      <div *ngFor="let node of row.nodes; let ii= index" class="node" cdkDrag> 
+        <div class="drag" > 
+          <ion-icon name="move-outline" ></ion-icon>
+        </div> 
+        <!-- remove -->
         <div class="remove" (click)="removeNode(row,node)"> - </div>
+        <!-- View connections -->
         <div class="view" (click)="showConnections(node.id)"> <i class="las la-eye"></i> </div>
+        <!-- Shows if we are drawing, connect nodes -->
         <div class="connect" *ngIf="!drawing" (click)="startDrawing(node)" [ngClass]="connectorState"></div>
         <div class="recieve" *ngIf="drawing" (click)="endDrawing(node)">*</div>
-        <input type="search" name="node.id" [id]="node.id" [ngModel]="row.nodes[ii].name"/>
+        <!-- Editable Name of the node  -->
+        <input type="text" name="node.id" [id]="node.id" [ngModel]="row.nodes[ii].name"/>
       </div>
     </div>
+
     <div class="add-node-btn" (click)="addNode(row)">
       <i class="las la-plus"></i>
     </div>
@@ -58,3 +67,5 @@
     </div>
   </div>
 </ion-content>
+
+

@@ -67,6 +67,8 @@ ion-content{
     flex-direction: row;
     justify-content: space-around;
     .node{
+      padding-left:10px;
+      border-left:5px solid black;
       margin: 10px 10px;
       height:80px;
       width:80px;
@@ -80,6 +82,17 @@ ion-content{
         text-align: center;
         border:none;
         -webkit-appearance: none;
+      }
+      .drag{
+        position:absolute;
+        bottom:30px;
+        left:0;
+        width:20px;
+        height:20px;
+        background-color: rgba(255, 0, 0, 0.4);
+        border-radius: 50%;
+        line-height: 17px;
+        text-align: center;
       }
       .remove{
         position:absolute;

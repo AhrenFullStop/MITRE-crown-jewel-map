@@ -1,5 +1,8 @@
 import { Component, HostListener } from '@angular/core';
 import { constants } from 'buffer';
+import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+
 declare var LeaderLine;
 @Component({
   selector: 'app-home',
