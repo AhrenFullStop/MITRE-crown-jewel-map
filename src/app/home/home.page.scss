@@ -73,69 +73,52 @@ ion-content {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
-
     .node {
       border-left: 5px solid black;
-      //  height: 80px;
-      //  width: 80px;
-      // background-color: rgba(0, 195, 255, 0.3);
-      //  border-radius: 50%;
       position: relative;
       width: 98px;
       height: 90px;
       background: #009bb0;
       border-radius: 10px;
       top: 3px;
+      .outer-connection{
+        display: none;
+      }
       &.sidebar {
         //show the sidebar
-        .outer-connection{
-          display:block;
-          
+        display:block;
+        .outer-connection {
+          position: absolute;
+          width: 25px;
+          height: 100%;
+          border-radius: 5px;
+          background: rgba(167, 167, 167, 0.68);
+          right: -25px;
+          padding: 5px 0;
+          display:flex;
+          flex-direction: column;
+          justify-content: space-around;
+          .bubble{
+            position: relative;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            line-height: 20px;
+            text-align: center;
+            margin: 0 auto;
+            &.view {
+              background-color: rgba(255, 251, 0, 0.4);
+            }
+            &.remove {
+              background-color: rgba(255, 0, 0, 0.4);
+            }
+            &.move{
+              background-color: #A5A5A3;
+            }
+          }
         }
       }
-      .outer-connection {
-        position: absolute;
-        width: 20px;
-        height: 100%;
-        border-radius: 5px;
-        background: rgba(0, 0, 0, 0.68);
-        right: -20px;
-        .view {
-          position: relative;
-          top: 48px;
-          left: 0;
-          width: 20px;
-          height: 20px;
-          background-color: rgba(255, 251, 0, 0.4);
-          border-radius: 50%;
-          line-height: 20px;
-          text-align: center;
-        }
-        .remove {
-          position: relative;
-          bottom: 0;
-          right: 0;
-          width: 20px;
-          height: 20px;
-          background-color: rgba(255, 0, 0, 0.4);
-          border-radius: 50%;
-          line-height: 17px;
-          text-align: center;
-        }
-        .move{
-          position: relative;
-          bottom: 4px;
-          left: 0;
-          width: 20px;
-          height: 20px;
-          background-color: #A5A5A3;
-          border-radius: 50%;
-          line-height: 20px;
-          text-align: center;
-          
-        }
-        //display: none;
-      }
+      
       input {
         background-color: transparent;
         height: 100%;
@@ -144,18 +127,6 @@ ion-content {
         border: none;
         -webkit-appearance: none;
       }
-      .drag {
-        position: absolute;
-        bottom: 30px;
-        left: 0;
-        width: 20px;
-        height: 20px;
-        background-color: rgba(255, 0, 0, 0.4);
-        border-radius: 50%;
-        line-height: 17px;
-        text-align: center;
-      }
-      
       
       .connect {
         position: absolute;

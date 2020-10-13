@@ -19,7 +19,7 @@
         </div>
     </div>
 
-  <div class="row-wrapper" *ngFor="let row of rows; let i=index" cdkDropList (cdkDropListDropped)="drop($event)">
+  <div class="row-wrapper" *ngFor="let row of rows; let i=index" cdkDropList (cdkDropListDropped)="drop(row,$event)">
     <div class="row-name">
       <input type="text" name="{row.id}" [ngModel]="rows[i].name"/>
     </div>
@@ -32,11 +32,11 @@
         (click)="showSideBar(node)"
         >   
         <div class="outer-connection" > 
-           <!-- remove -->
-        <div class="remove" (click)="removeNode(row,node)"> - </div>
-          <!-- View connections -->
-        <div class="view" (click)="showConnections(node.id)"> <i class="las la-eye"></i> </div>
-        <div class="move">  </div>
+            <!-- remove -->
+            <div class="bubble remove" (click)="removeNode(row,node)"> - </div>
+            <!-- View connections -->
+            <div class="bubble view" (click)="showConnections(node.id)"> <i class="las la-eye"></i> </div>
+            <div class="bubble move"><ion-icon name="move-outline"></ion-icon> </div>
         </div> 
        
        
