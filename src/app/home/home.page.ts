@@ -1,8 +1,5 @@
 import { Component, HostListener, ElementRef, ViewChild } from "@angular/core";
 import { constants } from "buffer";
-import { CdkDragDrop, moveItemInArray } from "@angular/cdk/drag-drop";
-import { DragDropModule } from "@angular/cdk/drag-drop";
-
 import { DomSanitizer } from "@angular/platform-browser";
 declare var LeaderLine;
 @Component({
@@ -52,13 +49,47 @@ export class HomePage {
     };
     this.rows.push(newRow);
     this.rowIdCounter++;
+    
     console.log("rows:", this.rows.length);
+   
   }
-  drop(row: IRow, e: CdkDragDrop<string[]>) {
-    console.log("", e);
-    moveItemInArray(row.nodes, e.previousIndex, e.currentIndex);
-    //this.reposition();
+
+  // drop(row: IRow, e: CdkDragDrop<string[]>) {
+  //   console.log("", e);
+  //   moveItemInArray(row.nodes, e.previousIndex, e.currentIndex);
+  //   //this.reposition();
+  // }
+
+  moveUpInArray(node:INode,row:IRow){
+    //first get the index of the node we want to move
+    let nodeIndex = row.nodes.findIndex((x) => x.id == node.id);
+    //Just check to make sure the node is within bounds
+    if(nodeIndex!==row.nodes.length-1){
+      row.nodes[nodeIndex]=row.nodes[nodeIndex+1];
+      row.nodes[nodeIndex+1]=node;
+      this.reposition();
+    }
+    //Else, do nothing
+    else{
+      console.log("already at the end, nothing to move")
+    }
   }
+
+  moveDownInArray(node:INode,row:IRow){
+    //first get the index of the node we want to move
+    let nodeIndex = row.nodes.findIndex((x) => x.id == node.id);
+    //Just check to make sure the node is within bounds
+    if(nodeIndex!==0){
+      row.nodes[nodeIndex]=row.nodes[nodeIndex-1];
+      row.nodes[nodeIndex-1]=node;
+      this.reposition();
+    }
+    //Else, do nothing
+    else{
+      console.log("already at the end, nothing to move")
+    }
+  }
+
   addNode(row) {
     console.log("creating node");
     let newNode: INode = {
@@ -66,11 +97,13 @@ export class HomePage {
       name: "node" + this.nodeIdCounter,
       connections: [],
       clicked: false,
+      
     };
     this.rows.find((x) => x.id == row.id).nodes.push(newNode);
     this.nodeIdCounter++;
     console.log("row " + row.name + " has " + row.nodes.length + " nodes.");
     this.reposition();
+    
   }
 
   handleKeyPress(event: any) {
@@ -153,10 +186,10 @@ export class HomePage {
     });
   }
 
-  drawLine(startNode?, endNode?) {
+  drawLine(startNode?, endNode?,state?) {
     let start = startNode ? startNode : this.startNode;
     let end = endNode ? endNode : this.endNode;
-    let lineColor = this.getColorBasedOnState();
+    let lineColor = state? this.getColorBasedOnState(state) : this.getColorBasedOnState();
     let myLine = new LeaderLine(
       document.getElementById(start),
       document.getElementById(end),
@@ -166,7 +199,7 @@ export class HomePage {
       origin: start,
       destination: end,
       line: myLine,
-      state: this.connectorState,
+      state:  state? state:this.connectorState,
     });
   }
 
@@ -196,6 +229,7 @@ export class HomePage {
   }
 
   async reposition() {
+    
     console.log("repositioning");
     await this.timeout(100);
     this.connections.forEach((conn, i) => {
@@ -203,10 +237,13 @@ export class HomePage {
       let myLine = new LeaderLine(
         document.getElementById(conn.origin),
         document.getElementById(conn.destination),
-        { color: this.getColorBasedOnState(conn.state) }
+        { 
+          color: this.getColorBasedOnState(conn.state) 
+        }
       );
       conn.line = myLine;
     });
+    this.hideConnections();
   }
 
   startDrawing(node) {
@@ -223,18 +260,6 @@ export class HomePage {
     this.drawLine();
   }
 
-  showSideBar(node: INode) {
-    //set all other sidebars to invisible
-    //foreach row, then each node, node.clicked=false
-    //set the sidebar visible
-    this.rows.forEach((thisRow) => {
-      thisRow.nodes.forEach((thisNode) => {
-        thisNode.clicked = false;
-      });
-    });
-    node.clicked = true;
-  }
-
   timeout(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
@@ -249,7 +274,6 @@ export class HomePage {
     const blob = new Blob([data], { type: "application/json" });
     const url = window.URL.createObjectURL(blob);
     this.url = this.sanitizer.bypassSecurityTrustResourceUrl(url);
-
     //
     const dwldLink = document.createElement("a");
 
@@ -265,6 +289,7 @@ export class HomePage {
     document.body.appendChild(dwldLink);
     dwldLink.click();
     document.body.removeChild(dwldLink);
+    this.reposition();
   }
 
   public importFile(event) {
@@ -295,7 +320,7 @@ export class HomePage {
         //draw the lines
         this.json.connections.forEach(async (con) => {
           await this.timeout(500);
-          this.drawLine(con.origin, con.destination);
+          this.drawLine(con.origin, con.destination, con.state);
         });
         //this.showAllConnections();
         this.reposition();

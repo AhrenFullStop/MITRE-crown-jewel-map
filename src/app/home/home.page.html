@@ -19,24 +19,22 @@
         </div>
     </div>
 
-  <div class="row-wrapper" *ngFor="let row of rows; let i=index" cdkDropList (cdkDropListDropped)="drop(row,$event)">
+  <div class="row-wrapper" *ngFor="let row of rows; let i=index">
     <div class="row-name">
-      <input type="text" name="{row.id}" [ngModel]="rows[i].name"/>
+      <input type="text" name="{row.id}" [(ngModel)]="rows[i].name"/>
     </div>
 
-    <div class="node-container" >
+    <div class="node-container">
       <div *ngFor="let node of row.nodes; let ii= index" 
-        [ngClass]="node.clicked ? 'node sidebar' : 'node'" 
-        cdkDragBoundary=".node-container" 
-        cdkDrag 
-        (click)="showSideBar(node)"
+        class="node" 
         >   
         <div class="outer-connection" > 
             <!-- remove -->
             <div class="bubble remove" (click)="removeNode(row,node)"> - </div>
             <!-- View connections -->
             <div class="bubble view" (click)="showConnections(node.id)"> <i class="las la-eye"></i> </div>
-            <div class="bubble move"><ion-icon name="move-outline"></ion-icon> </div>
+            <div class="bubble move" (click)="moveUpInArray(node,row)"><ion-icon name="chevron-forward-outline"></ion-icon></div>
+            <div class="bubble move" (click)="moveDownInArray(node,row)"><ion-icon name="chevron-back-outline"></ion-icon> </div>
         </div> 
        
        
@@ -44,7 +42,12 @@
         <div class="connect" *ngIf="!drawing" (click)="startDrawing(node)" [ngClass]="connectorState"></div>
         <div class="recieve" *ngIf="drawing" (click)="endDrawing(node)"> </div>
         <!-- Editable Name of the node  -->
-        <input type="text" name="node.id" [id]="node.id" [ngModel]="row.nodes[ii].name"/>
+        <textarea
+        style="overflow:hidden;
+        resize:none" 
+        name="node.id" 
+        [id]="node.id" 
+        [(ngModel)]="row.nodes[ii].name"></textarea>
       </div>
     </div>
 
