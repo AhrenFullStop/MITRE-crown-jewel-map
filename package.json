@@ -32,15 +32,15 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^16.2.0",
-    "@angular/cli": "^16.2.0",
-    "@angular/compiler": "^16.2.0",
-    "@angular/compiler-cli": "^16.2.0",
-    "@angular/language-service": "^16.2.0",
     "@angular-eslint/builder": "^16.3.0",
     "@angular-eslint/eslint-plugin": "^16.3.0",
     "@angular-eslint/eslint-plugin-template": "^16.3.0",
     "@angular-eslint/schematics": "^16.3.0",
     "@angular-eslint/template-parser": "^16.3.0",
+    "@angular/cli": "^16.2.0",
+    "@angular/compiler": "^16.2.0",
+    "@angular/compiler-cli": "^16.2.0",
+    "@angular/language-service": "^16.2.0",
     "@capacitor/cli": "^5.7.0",
     "@ionic/angular-toolkit": "^9.0.0",
     "@types/jasmine": "^4.3.0",
@@ -59,6 +59,3 @@
   },
   "description": "An Ionic project"
 }
-
-
-
